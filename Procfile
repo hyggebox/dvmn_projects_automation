@@ -1,1 +1,1 @@
-web: gunicorn admin_projects.wsgi
+web: gunicorn dvmn_projects_automation.wsgi
