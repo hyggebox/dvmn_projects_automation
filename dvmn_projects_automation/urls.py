@@ -20,5 +20,6 @@ from dpa_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('dpa_app/<user_id>/', views.show_time_slots, name='choose_time'),
+    path('dpa_app/<user_id>', views.show_time_slots, name='choose_time'),
+    path('thanks/', views.show_thanks),
 ]

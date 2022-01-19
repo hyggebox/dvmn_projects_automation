@@ -1,16 +1,29 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang='ru'>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset='utf-8'>
+    <meta name='viewport'
+          content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
-  <title>Выбор времени для созвона</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Выбор времени для созвона</title>
+    <link rel='stylesheet'
+          href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'
+          integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'
+          crossorigin='anonymous'>
 </head>
 <body>
-
-<p>Здесь будут варианты времени для выбора</p>
-<p>User id: {{ user_id }}</p>
-
+<div class='container'>
+<p>Привет, {name}</p>
+<p>
+  В какие из этих слотов сможешь созвониться? Если ни в один,
+  на следующей неделе можно будет другое время выбрать.
+</p>
+<form action='/dpa_app/{{ user_id }}' method='post'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type='hidden' name='user_id' value='{{ user_id }}'>
+    <input type='submit' value='Отправить' class='btn btn-primary'>
+</form>
+</div>
 </body>
 </html>
