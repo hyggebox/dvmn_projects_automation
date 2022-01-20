@@ -29,6 +29,9 @@ class PM(models.Model):
     def __str__(self):
         return f'ПМ {self.name}'
 
+    def get_time_slots(self):
+        return " | ".join([str(time_slot) for time_slot in self.time_slots.all()])
+
     class Meta:
         verbose_name = 'ПМ'
         verbose_name_plural = 'ПМы'
@@ -86,10 +89,16 @@ class Student(models.Model):
     )
 
     def __str__(self):
-        return f'Учение {self.name}'
+        return f'Ученик {self.name}'
+
+    def get_best_time_slots(self):
+        return " | ".join(
+            [str(time_slot) for time_slot in self.best_time_slots.all()])
+
+    def get_ok_time_slots(self):
+        return " | ".join(
+            [str(time_slot) for time_slot in self.ok_time_slots.all()])
 
     class Meta:
         verbose_name = 'Ученик'
         verbose_name_plural = 'Ученики'
-
-# Create your models here.
