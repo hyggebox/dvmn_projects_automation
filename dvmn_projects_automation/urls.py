@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from dpa_app import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('<user_id>', views.show_time_slots, name='choose_time'),
+    path('thanks/', views.show_thanks),
 ]
