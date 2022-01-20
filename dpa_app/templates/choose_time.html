@@ -13,12 +13,12 @@
 </head>
 <body>
 <div class='container'>
-<p>Привет, {name}</p>
+<p>Привет, {{ name }}</p>
 <p>
   В какие из этих слотов сможешь созвониться? Если ни в один,
   на следующей неделе можно будет другое время выбрать.
 </p>
-<form action='/dpa_app/{{ user_id }}' method='post'>
+<form action='/{{ user_id }}' method='post'>
     {% csrf_token %}
     {{ form.as_p }}
     <input type='hidden' name='user_id' value='{{ user_id }}'>
