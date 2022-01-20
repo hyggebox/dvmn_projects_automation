@@ -10,3 +10,8 @@ ___________________
 - `SECRET_KEY` — секретный ключ проекта.
 - `DATABASE_URL` - URL базы данных
 - `HEROKU_APP_NAME` - название приложения в Heroku
+
+Запуск бота : 
+```commandline
+python manage.py bot
+```
