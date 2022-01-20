@@ -27,7 +27,7 @@ def show_time_slots(request, user_id):
                       context={
                           'user_id': user_id,
                           'form': form,
-                          'name': student.name
+                          'name': student.f_name
                       })
 
 
