@@ -7,7 +7,7 @@ class PMAdmin(admin.ModelAdmin):
 
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'level', 'get_best_time_slots', 'get_ok_time_slots')
+    list_display = ('f_name', 'l_name', 'level', 'get_best_time_slots', 'get_ok_time_slots')
 
 
 admin.site.register(PM, PMAdmin)
