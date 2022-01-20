@@ -1,2 +1,2 @@
 web: gunicorn dvmn_projects_automation.wsgi
-worker: python manage.py bot
+worker: python3 manage.py bot
