@@ -12,7 +12,10 @@ from dpa_app.models import TimeSlot, PM, Group, Student
 
 
 BASIC_URL = 'https://automatizationprojects.herokuapp.com/'
-USER_ID = 802604339 # for testing
+USER_IDS = [802604339] # for testing
+# # IDs from DB
+# students = Student.objects.all()
+# USER_IDS = [student.tg_id for student in students]
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -25,17 +28,17 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def send_link(bot):
-    msg = f'Ссылка: {BASIC_URL}{USER_ID}'
-    bot.sendMessage(chat_id=USER_ID, text=msg)
+def send_link(bot, user_id):
+    msg = f'Ссылка: {BASIC_URL}{user_id}'
+    bot.sendMessage(chat_id=user_id, text=msg)
 
 
-def send_result(bot):
+def send_result(bot, user_id):
     msg = 'Группы распределены! 🎉\n\n' \
           '⏰ Время созвона: {19:00-19:30}\n' \
           '👤 Твой ПМ: {Имя ПМа}\n' \
           '👥 Твоя группа:\n-- {Имя 1}\n-- {Имя 2}\n-- {Имя 3}'
-    bot.sendMessage(chat_id=USER_ID, text=msg)
+    bot.sendMessage(chat_id=user_id, text=msg)
 
 
 def main() -> None:
@@ -53,11 +56,14 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("start", start))
 
+
     if True: # Заменить на условие, при котором будет отправляться ссылка на форму
-        send_link(bot)
+        for user_id in USER_IDS:
+            send_link(bot, user_id)
 
     if True: # Заменить на условие, когда будет отправляться результат
-        send_result(bot)
+        for user_id in USER_IDS:
+            send_result(bot, user_id)
 
     updater.start_polling()
     updater.idle()
