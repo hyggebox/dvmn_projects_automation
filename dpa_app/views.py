@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 
 from .forms import ChooseTimeForm
+from .models import Student
 
 
 def show_time_slots(request, user_id):
@@ -16,11 +17,19 @@ def show_time_slots(request, user_id):
             print(form.data.get('user_id'))  # user_id из адреса
 
             return HttpResponseRedirect('/thanks/')
+    try:
+        student = Student.objects.get(tg_id=user_id)
+    except Student.DoesNotExist:
+        raise Http404('Page Not Found')
     else:
         form = ChooseTimeForm()
+        return render(request, 'choose_time.html',
+                      context={
+                          'user_id': user_id,
+                          'form': form,
+                          'name': student.name
+                      })
 
-    return render(request, 'choose_time.html', context={'user_id': user_id,
-                                                        'form': form})
 
 def show_thanks(request):
     return HttpResponse('Мы постараемся учесть твои пожелания =)')
