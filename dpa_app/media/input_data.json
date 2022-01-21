@@ -17,7 +17,7 @@
         "18.00-18.30",
 		"18.30-19.00",
 		"19.00-19.30",
-		"19.30-20.00"
+		"19.30-20.00",
       ]
     }
   ],
@@ -39,6 +39,96 @@
       "LastName": "Лесков",
       "Level": "Новички+",
       "TelegramID": 879585096
-    }
+    },
+    {
+      "FirstName": "Алексей",
+      "LastName": "Бойко",
+      "Level": "Джуны",
+      "TelegramID": 1
+    },
+    {
+      "FirstName": "Роман",
+      "LastName": "Кузьмин",
+      "Level": "Джуны",
+      "TelegramID": 2
+    },
+    {
+      "FirstName": "Иван",
+      "LastName": "",
+      "Level": "Джуны",
+      "TelegramID": 3
+    },
+    {
+      "FirstName": "Виталий",
+      "LastName": "Елохин",
+      "Level": "Джуны",
+      "TelegramID": 4
+    },
+    {
+      "FirstName": "Никита",
+      "LastName": "Nori",
+      "Level": "Джуны",
+      "TelegramID": 5
+    },
+    {
+      "FirstName": "Виталий",
+      "LastName": "Клюкин",
+      "Level": "Джуны",
+      "TelegramID": 6
+    },
+    {
+      "FirstName": "Георгий",
+      "LastName": "Винокуров",
+      "Level": "Джуны",
+      "TelegramID": 7
+    },
+    {
+      "FirstName": "Александр",
+      "LastName": "Тен",
+      "Level": "Новички+",
+      "TelegramID": 8
+    },
+    {
+      "FirstName": "Роман",
+      "LastName": "Воложанин",
+      "Level": "Новички+",
+      "TelegramID": 9
+    },
+    {
+      "FirstName": "Александр",
+      "LastName": "Блид",
+      "Level": "Новички+",
+      "TelegramID": 10
+    },
+    {
+      "FirstName": "Виталий",
+      "LastName": "Бородулин",
+      "Level": "Новички+",
+      "TelegramID": 11
+    },
+    {
+      "FirstName": "Валерий",
+      "LastName": "Ефремов",
+      "Level": "Новички+",
+      "TelegramID": 12
+    },
+    {
+      "FirstName": "Илья",
+      "LastName": "Габдрахманов",
+      "Level": "Новички+",
+      "TelegramID": 13
+    },
+    {
+      "FirstName": "Максим",
+      "LastName": "Кутовой",
+      "Level": "Новички+",
+      "TelegramID": 14
+    },
+    {
+      "FirstName": "Стас",
+      "LastName": "Кошенков",
+      "Level": "Новички+",
+      "TelegramID": 15
+    },
     ]
 }
