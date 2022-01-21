@@ -1,0 +1,8 @@
+{% extends 'admin/index.html' %}
+{% block branding %}
+  <form action="import/" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Импорт" />
+  </form>
+    {{ block.super }}
+{% endblock %}

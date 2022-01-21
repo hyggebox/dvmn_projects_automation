@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from dpa_app import views
 
@@ -23,3 +25,6 @@ urlpatterns = [
     path('<int:user_id>', views.show_time_slots, name='choose_time'),
     path('thanks/', views.show_thanks),
 ]
+
+if settings.DEBUG: # new
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
