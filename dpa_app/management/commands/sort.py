@@ -59,9 +59,10 @@ def load_student_slots():
         slots = student.best_time_slots.all()
         list_slots = []
         for slot in slots:
-            print(slot.timeslot)
+
             list_slots.append(slot.timeslot)
-        print('='*80)
+
+        prefs[student.id]=list_slots
     return prefs
 
 def main() -> None:
