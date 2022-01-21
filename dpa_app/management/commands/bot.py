@@ -29,7 +29,8 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def send_link(bot, user_id):
-    msg = f'Ссылка: {BASIC_URL}{user_id}'
+    msg = f'🔔 Пройди по ссылке и выбери удобные для созвона слоты: {BASIC_URL}{user_id}\n\n' \
+          f'Заполнить форму нужно до <25.01 18:00 (МСК)>'
     bot.sendMessage(chat_id=user_id, text=msg)
 
 
