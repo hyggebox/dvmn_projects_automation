@@ -55,9 +55,9 @@ class Command(BaseCommand):
                                 student, created = Student.objects.get_or_create(
                                     tg_id = telegram_id_student,
                                     f_name =first_name_student,
-                                    l_name = last_name_student,
-                                    level = level_student
+                                    l_name = last_name_student
                                 )
+                                student.level = level_student
                                 if created:
                                     student.save()
                                     display_format = "\nStudent, {}, has been saved."
