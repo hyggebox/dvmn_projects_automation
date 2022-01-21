@@ -40,5 +40,101 @@
       "Level": "Новички+",
       "TelegramID": 879585096
     },
+    {
+      "FirstName": "Алексей",
+      "LastName": "Бойко",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Роман",
+      "LastName": "Кузьмин",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Иван",
+      "LastName": "",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Виталий",
+      "LastName": "Елохин",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Никита",
+      "LastName": "Nori",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Виталий",
+      "LastName": "Клюкин",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Георгий",
+      "LastName": "Винокуров",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Георгий",
+      "LastName": "Винокуров",
+      "Level": "Джуны",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Александр",
+      "LastName": "Тен",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Роман",
+      "LastName": "Воложанин",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Александр",
+      "LastName": "Блид",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Виталий",
+      "LastName": "Бородулин",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Валерий",
+      "LastName": "Ефремов",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Илья",
+      "LastName": "Габдрахманов",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Максим",
+      "LastName": "Кутовой",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
+    {
+      "FirstName": "Стас",
+      "LastName": "Кошенков",
+      "Level": "Новички+",
+      "TelegramID": 0
+    },
     ]
 }
