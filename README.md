@@ -15,3 +15,10 @@ ___________________
 ```commandline
 python manage.py bot
 ```
+команда прописана в Procfile, но для запуска в heroku нужно вручную включить второй dynos
+
+Загрузка json происходит из папки media приложения командой
+
+```commandline
+python manage.py import_from_json
+```
