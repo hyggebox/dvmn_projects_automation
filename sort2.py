@@ -30,6 +30,18 @@ def load_student_slots():
         prefs[student.id] = list_slots
     return prefs
 
+
+def print_groups(groups, temp_ids):
+    for slot_temp_id, student_ids in groups.items():
+        slot_id = temp_ids[slot_temp_id]
+        slot = TimeSlot.objects.get(id=slot_id)
+        print(slot.timeslot)
+        for student_id in student_ids:
+            student = Student.objects.get(id=student_id)
+            print(f'{student.f_name} {student.l_name} -- ({student.level})')
+        print('')
+
+
 # slot1 = "18:00-18:30"
 # slot2 = "18:30-19:00"
 # slot3 = "19:00-19:30"
@@ -103,7 +115,8 @@ if __name__ == '__main__':
 
 
     print("Группы:")
-    pprint(groups) # keys are temporary slot ids from temporary_ids_for_slots
+    # pprint(groups) # keys are temporary slot ids from temporary_ids_for_slots
+    print_groups(groups, temporary_ids_for_slots)
     print('')
 
     print("Студенты не вошедшие в группы:")
