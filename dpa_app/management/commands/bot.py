@@ -58,7 +58,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("start", start))
 
 
-    if True: # Заменить на условие, при котором будет отправляться ссылка на форму
+    if False: # Заменить на условие, при котором будет отправляться ссылка на форму
         for user_id in db_user_ids:
             try:
                 send_link(bot, user_id)
