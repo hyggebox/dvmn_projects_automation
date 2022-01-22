@@ -8,6 +8,7 @@ from dpa_app.models import TimeSlot, PM, Group, Student
 
 from pprint import pprint
 
+# Сейчас не используется
 def get_time_slots():
     '''Returns a list of available time_slots from DB'''
     pms = PM.objects.all()
@@ -17,6 +18,17 @@ def get_time_slots():
         for slot in time_slots:
             available_time_slots.append(slot.id) # returns ids of slots
             # available_time_slots.append(slot.timeslot) # returns slots
+    return available_time_slots
+
+
+def get_pms_time_slots():
+    '''Returns a tuple of available time_slots with PMs from DB'''
+    pms = PM.objects.all()
+    available_time_slots = []
+    for pm in pms:
+        time_slots = pm.time_slots.all()
+        for slot in time_slots:
+            available_time_slots.append((slot.id, pm.name))
     return available_time_slots
 
 
@@ -31,11 +43,22 @@ def load_student_slots():
     return prefs
 
 
+def load_student_secondary_slots():
+    '''Returns a dict of student ids with possible time slots'''
+    prefs = {}
+    students = Student.objects.all()
+    for student in students:
+        ok_slots = student.ok_time_slots.all()
+        list_slots = [slot.id for slot in ok_slots]
+        prefs[student.id] = list_slots
+    return prefs
+
+
 def print_groups(groups, temp_ids):
     for slot_temp_id, student_ids in groups.items():
-        slot_id = temp_ids[slot_temp_id]
+        slot_id, pm_name = temp_ids[slot_temp_id]
         slot = TimeSlot.objects.get(id=slot_id)
-        print(slot.timeslot)
+        print(slot.timeslot, pm_name)
         for student_id in student_ids:
             student = Student.objects.get(id=student_id)
             print(f'{student.f_name} {student.l_name} -- ({student.level})')
@@ -87,8 +110,8 @@ def print_groups(groups, temp_ids):
 
 
 if __name__ == '__main__':
-    available_time_slots = get_time_slots()
-    print(available_time_slots)
+    available_time_slots = get_pms_time_slots()
+    print(available_time_slots) # list of tuples (time_slot_id, PM)
 
     temporary_ids_for_slots = {}
     for num, slot in enumerate(available_time_slots):
@@ -98,8 +121,7 @@ if __name__ == '__main__':
     students = load_student_slots()
     groups = {}
 
-    for temp_id, slot_id in temporary_ids_for_slots.items():
-        print(temp_id, slot_id)
+    for temp_id, (slot_id, pm_name) in temporary_ids_for_slots.items():
         students_in_group = []
         for student, student_answer in students.items():
 
@@ -119,7 +141,7 @@ if __name__ == '__main__':
     print_groups(groups, temporary_ids_for_slots)
     print('')
 
-    print("Студенты не вошедшие в группы:")
+    print("Студенты не вошедшие в группы: (id студента: [id слотов])")
     pprint(students)
     print('')
 
