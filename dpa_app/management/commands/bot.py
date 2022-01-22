@@ -12,10 +12,6 @@ from dpa_app.models import TimeSlot, PM, Group, Student
 
 
 BASIC_URL = 'https://automatizationprojects.herokuapp.com/'
-USER_IDS = [802604339] # for testing
-# # IDs from DB
-# students = Student.objects.all()
-# USER_IDS = [student.tg_id for student in students]
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -51,6 +47,10 @@ def main() -> None:
         format='%(levelname)s: %(asctime)s - %(name)s - %(message)s',
         level=logging.INFO)
 
+    db_students = Student.objects.all()
+    db_user_ids = [student.tg_id for student in db_students]
+    # db_user_ids = [12, 802604339, 123]  # for testing
+
     bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
     dispatcher = updater.dispatcher
@@ -59,12 +59,21 @@ def main() -> None:
 
 
     if True: # Заменить на условие, при котором будет отправляться ссылка на форму
-        for user_id in USER_IDS:
-            send_link(bot, user_id)
+        for user_id in db_user_ids:
+            try:
+                send_link(bot, user_id)
+                logging.info(f'Message sent to user with id {user_id}')
+            except telegram.error.BadRequest:
+                logging.error(f'Message cannot be sent to user with id {user_id}')
 
-    if True: # Заменить на условие, когда будет отправляться результат
-        for user_id in USER_IDS:
-            send_result(bot, user_id)
+
+    if False: # Заменить на условие, когда будет отправляться результат
+        for user_id in db_user_ids:
+            try:
+                send_result(bot, user_id)
+                logging.info(f'Message sent to user with id {user_id}')
+            except telegram.error.BadRequest:
+                logging.error(f'Message cannot be sent to user with id {user_id}')
 
     updater.start_polling()
     updater.idle()
