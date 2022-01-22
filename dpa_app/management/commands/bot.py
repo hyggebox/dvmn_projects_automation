@@ -1,8 +1,15 @@
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvmn_projects_automation.settings")
+
+import django
+django.setup()
+
 import logging
 import os
 
 import telegram
 
+from datetime import datetime
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (CallbackContext, Updater, CommandHandler)
@@ -57,8 +64,10 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("start", start))
 
-
-    if False: # Заменить на условие, при котором будет отправляться ссылка на форму
+    utc_now = datetime.utcnow()
+    start_date_for_send = 1
+    end_date_for_send = 3
+    if start_date_for_send <= utc_now.day < end_date_for_send and 6 <= utc_now.hour <= 11:
         for user_id in db_user_ids:
             try:
                 send_link(bot, user_id)
