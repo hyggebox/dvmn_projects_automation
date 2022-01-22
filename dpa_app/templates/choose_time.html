@@ -21,7 +21,6 @@
 <form action='/{{ user_id }}' method='post'>
     {% csrf_token %}
     {{ form.as_p }}
-    <input type='hidden' name='user_id' value='{{ user_id }}'>
     <input type='submit' value='Отправить' class='btn btn-primary'>
 </form>
 </div>
