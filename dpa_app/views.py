@@ -32,4 +32,4 @@ def show_time_slots(request, user_id):
 
 
 def show_thanks(request):
-    return HttpResponse('Мы постараемся учесть твои пожелания =)')
+    return render(request, 'thanks.html')
