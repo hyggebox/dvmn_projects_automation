@@ -43,15 +43,12 @@ def load_student_slots():
     return prefs
 
 
-def load_student_secondary_slots():
-    '''Returns a dict of student ids with possible time slots'''
-    prefs = {}
-    students = Student.objects.all()
-    for student in students:
-        ok_slots = student.ok_time_slots.all()
-        list_slots = [slot.id for slot in ok_slots]
-        prefs[student.id] = list_slots
-    return prefs
+def load_students_secondary_slots(student_id):
+    '''Returns a list of student's possible time slots'''
+    student = Student.objects.get(id=student_id)
+    ok_slots = student.ok_time_slots.all()
+    ok_slots_ids = [slot.id for slot in ok_slots]
+    return ok_slots_ids
 
 
 def print_groups(groups, temp_ids):
@@ -113,8 +110,8 @@ if __name__ == '__main__':
 
     students = load_student_slots()
     groups = {}
-    sorted_groups, temporary_ids_for_slots, not_included_students = sort_students_for_groups(groups, temporary_ids_for_slots, students)
-
+    sorted_groups, temporary_ids_for_slots, not_included_students = \
+        sort_students_for_groups(groups, temporary_ids_for_slots, students)
 
     print("Группы:")
     # pprint(groups) # keys are temporary slot ids from temporary_ids_for_slots
