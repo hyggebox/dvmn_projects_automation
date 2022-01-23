@@ -1,9 +1,3 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dvmn_projects_automation.settings")
-
-import django
-django.setup()
-
 import logging
 import os
 
@@ -11,6 +5,7 @@ import telegram
 
 from datetime import datetime
 from dotenv import load_dotenv
+from time import sleep
 from telegram import Update
 from telegram.ext import (CallbackContext, Updater, CommandHandler)
 
@@ -68,8 +63,8 @@ def main() -> None:
         level=logging.INFO)
 
     db_students = Student.objects.all()
-    db_user_ids = [student.tg_id for student in db_students]
-    # db_user_ids = [123, 802604339]  # for testing
+    # db_user_ids = [student.tg_id for student in db_students]
+    db_user_ids = [802604339, 15]  # for testing
 
     bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
@@ -79,14 +74,20 @@ def main() -> None:
 
     utc_now = datetime.utcnow()
     start_date_for_send = 1
-    end_date_for_send = 3
-    if start_date_for_send <= utc_now.day < end_date_for_send and 6 <= utc_now.hour <= 11:
-        for user_id in db_user_ids:
-            try:
-                send_link(bot, user_id)
-                logging.info(f'Message sent to user with id {user_id}')
-            except telegram.error.BadRequest:
-                logging.error(f'Message cannot be sent to user with id {user_id}')
+    end_date_for_send = 24
+    while True:
+        if start_date_for_send <= utc_now.day < end_date_for_send and 6 <= utc_now.hour <= 11:
+            for user_id in db_user_ids:
+                student = Student.objects.get(tg_id=user_id)
+                if not student.link_sent:
+                    try:
+                        send_link(bot, user_id)
+                        student.link_sent = True
+                        student.save()
+                        logging.info(f'Message sent to user with id {user_id}')
+                    except telegram.error.BadRequest:
+                        logging.error(f'Message cannot be sent to user with id {user_id}')
+        sleep(15)
 
 
     if False: # Заменить на условие, когда будет отправляться результат
