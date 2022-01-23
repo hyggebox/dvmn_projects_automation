@@ -123,17 +123,20 @@ if __name__ == '__main__':
 
     for temp_id, (slot_id, pm_name) in temporary_ids_for_slots.items():
         students_in_group = []
-        for student, student_answer in students.items():
+        for student_id, student_answer in students.items():
+
+            student = Student.objects.get(id=student_id)
+            students_level = student.level
 
             for choiced_slot in student_answer:
 
                 if choiced_slot == slot_id and len(students_in_group) < 3:
-                    students_in_group.append(student)
+                    students_in_group.append(student_id)
 
                 groups.update({temp_id: students_in_group})
 
-        for student in students_in_group:
-            del students[student]
+        for student_id in students_in_group:
+            del students[student_id]
 
 
     print("Группы:")
