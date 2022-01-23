@@ -64,14 +64,14 @@ class Group(models.Model):
 
 
 class Student(models.Model):
-    tg_id = models.IntegerField(verbose_name='ID ученика в телеграмме')
-    f_name = models.CharField(verbose_name='Имя ученика',
+    tg_id = models.IntegerField(verbose_name='ID в Telegram')
+    f_name = models.CharField(verbose_name='Имя',
                               max_length=200)
-    l_name = models.CharField(verbose_name='Фамилия ученика',
+    l_name = models.CharField(verbose_name='Фамилия',
                               null=True,
                               blank=True,
                               max_length=200)
-    level = models.CharField(verbose_name='Уровень ученика',
+    level = models.CharField(verbose_name='Уровень',
                              max_length=200)
     best_time_slots = models.ManyToManyField(
         TimeSlot,
@@ -93,7 +93,10 @@ class Student(models.Model):
         blank=True,
         null=True
     )
-    link_sent = models.BooleanField(default=False)
+    link_sent = models.BooleanField('Ссылка на форму отправлена',
+                                    default=False)
+    result_sent = models.BooleanField('Результаты распределения отправлены',
+                                      default=False)
 
     def __str__(self):
         return f'Ученик {self.f_name}'
