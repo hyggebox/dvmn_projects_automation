@@ -15,6 +15,7 @@ from telegram import Update
 from telegram.ext import (CallbackContext, Updater, CommandHandler)
 
 from django.core.management.base import BaseCommand
+from django.core.exceptions import ObjectDoesNotExist
 from dpa_app.models import TimeSlot, PM, Group, Student
 
 
@@ -24,7 +25,7 @@ BASIC_URL = 'https://automatizationprojects.herokuapp.com/'
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
-    update.message.reply_markdown_v2(
+    update.message.reply_markdown(
         f'Привет, {user.full_name}\!\n'
         f'Позже пришлю тебе ссылку на форму, '
         f'где ты сможешь выбрать удобное время для созвона 😊\n\n'
@@ -38,11 +39,23 @@ def send_link(bot, user_id):
 
 
 def send_result(bot, user_id):
-    msg = 'Группы распределены! 🎉\n\n' \
-          '⏰ Время созвона: {19:00-19:30}\n' \
-          '👤 Твой ПМ: {Имя ПМа}\n' \
-          '👥 Твоя группа:\n-- {Имя 1}\n-- {Имя 2}\n-- {Имя 3}'
-    bot.sendMessage(chat_id=user_id, text=msg)
+    student = Student.objects.get(tg_id=user_id)
+    students_group = student.group
+    if students_group:
+        groups_time_slot = str(students_group.time_slot)
+        groups_pm = students_group.pm.name
+        fellow_students = students_group.students.all()
+        fellow_students_names = [f'{student.f_name} {student.l_name}' for student in fellow_students]
+
+        msg = f'Группы распределены! 🎉\n\n' \
+              f'⏰ Время созвона: {groups_time_slot}\n' \
+              f'👤 Твой ПМ: {groups_pm}\n' \
+              f'👥 Твоя группа:\n'
+        for student_name in fellow_students_names:
+            msg += f'{student_name}\n'
+        bot.sendMessage(chat_id=user_id, text=msg)
+    else:
+        raise ValueError
 
 
 def main() -> None:
@@ -56,7 +69,7 @@ def main() -> None:
 
     db_students = Student.objects.all()
     db_user_ids = [student.tg_id for student in db_students]
-    # db_user_ids = [12, 802604339, 123]  # for testing
+    # db_user_ids = [123, 802604339]  # for testing
 
     bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
@@ -81,6 +94,10 @@ def main() -> None:
             try:
                 send_result(bot, user_id)
                 logging.info(f'Message sent to user with id {user_id}')
+            except Student.DoesNotExist:
+                logging.error(f'Student with id {user_id} not found in the database')
+            except ValueError:
+                logging.error(f"Student with id {user_id} doesn't belong to any group")
             except telegram.error.BadRequest:
                 logging.error(f'Message cannot be sent to user with id {user_id}')
 
