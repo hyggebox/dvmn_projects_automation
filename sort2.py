@@ -55,6 +55,7 @@ def load_student_secondary_slots():
 
 
 def print_groups(groups, temp_ids):
+    print("groups", groups)
     for slot_temp_id, student_ids in groups.items():
         slot_id, pm_name = temp_ids[slot_temp_id]
         slot = TimeSlot.objects.get(id=slot_id)
@@ -65,48 +66,40 @@ def print_groups(groups, temp_ids):
         print('')
 
 
-# slot1 = "18:00-18:30"
-# slot2 = "18:30-19:00"
-# slot3 = "19:00-19:30"
-# slot4 = "19:30-20:00"
-# slot5 = "20:00-20:30"
-# slot6 = "20:30-21:00"
-#
-#
-# slots = {
-#     slot1: [],
-#     slot2: [],
-#     slot3: [],
-#     slot4: [],
-#     slot5: [],
-#     slot6: [],
-# }
+def sort_students_for_groups(groups, temporary_ids_for_slots, students):
 
-# students = {
-#     'Student1': [slot3, slot4, slot6],
-#     'Student2': [slot3, slot4, slot6],
-#     'Student3': [slot5, slot4],
-#     'Student4': [slot2],
-#     'Student5': [slot1, slot4, slot5, slot6],
-#     'Student6': [slot3, slot4, slot6],
-#     'Student7': [slot4, slot6],
-#     'Student8': [slot3],
-#     'Student9': [slot1, slot2, slot3, slot4, slot5, slot6],
-#     'Student10': [slot1, slot2, slot3, slot4, slot5, slot6],
-#     'Student11': [slot2],
-#     'Student12': [slot2, slot3],
-#     'Student13': [slot5],
-#     'Student14': [slot5, slot6],
-#     'Student15': [slot1, slot2, slot3, slot4, slot5, slot6],
-#     'Student16': [slot1, slot4, slot6],
-#     'Student17': [slot2, slot4, slot6],
-#     'Student18': [slot5],
-#     'Student19': [slot3],
-#     'Student20': [slot2, slot4, slot6],
-#     'Student21': [slot2, slot4, slot6],
-#        }
+    for temp_id, (slot_id, pm_name) in temporary_ids_for_slots.items():
+        students_in_group = []
+        for student_id, student_answer in students.items():
 
+            student = Student.objects.get(id=student_id)
+            students_level = student.level
 
+            for chosen_slot in student_answer:
+
+                if chosen_slot == slot_id \
+                    and len(students_in_group) == 0:
+                        students_in_group.append(student_id)
+                        first_student_id_in_group = student_id
+
+                elif chosen_slot == slot_id \
+                    and len(students_in_group) < 3 \
+                    and first_grupped_student_lvl == students_level:
+                        students_in_group.append(student_id)
+                        first_student_id_in_group = groups[last_id][0]
+
+                groups.update({temp_id: students_in_group})
+                last_id = temp_id
+
+            first_grupped_student_lvl = Student.objects.get(
+                id=first_student_id_in_group
+                ).level
+
+        for student_id in students_in_group:
+            del students[student_id]
+
+        sorted_groups = groups
+    return sorted_groups, temporary_ids_for_slots, students
 
 
 if __name__ == '__main__':
@@ -120,31 +113,14 @@ if __name__ == '__main__':
 
     students = load_student_slots()
     groups = {}
-
-    for temp_id, (slot_id, pm_name) in temporary_ids_for_slots.items():
-        students_in_group = []
-        for student_id, student_answer in students.items():
-
-            student = Student.objects.get(id=student_id)
-            students_level = student.level
-
-            for chosen_slot in student_answer:
-
-                if chosen_slot == slot_id and len(students_in_group) < 3:
-                    students_in_group.append(student_id)
-
-                groups.update({temp_id: students_in_group})
-
-        for student_id in students_in_group:
-            del students[student_id]
+    sorted_groups, temporary_ids_for_slots, not_included_students = sort_students_for_groups(groups, temporary_ids_for_slots, students)
 
 
     print("Группы:")
     # pprint(groups) # keys are temporary slot ids from temporary_ids_for_slots
-    print_groups(groups, temporary_ids_for_slots)
+    print_groups(sorted_groups, temporary_ids_for_slots)
     print('')
 
     print("Студенты не вошедшие в группы: (id студента: [id слотов])")
-    pprint(students)
+    pprint(not_included_students)
     print('')
-
