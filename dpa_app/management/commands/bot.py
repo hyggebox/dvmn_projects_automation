@@ -3,19 +3,18 @@ import os
 
 import telegram
 
-from datetime import datetime
 from dotenv import load_dotenv
 from time import sleep
 from telegram import Update
 from telegram.ext import (CallbackContext, Updater, CommandHandler)
 
+from django.utils import timezone
 from django.core.management.base import BaseCommand
-from django.core.exceptions import ObjectDoesNotExist
-from dpa_app.models import TimeSlot, PM, Group, Student
+from dpa_app.models import TimeSlot, PM, Group, Student, SendDate
 
 
 BASIC_URL = 'https://automatizationprojects.herokuapp.com/'
-SLEEP_TIME_FOR_MSG_RESEND = 1200  # in seconds
+SLEEP_TIME_FOR_MSG_RESEND = 7200  # in seconds
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -28,9 +27,9 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def send_link(bot, user_id):
+def send_link(bot, user_id, deadline):
     msg = f'🔔 Пройди по ссылке и выбери удобные для созвона слоты: {BASIC_URL}{user_id}\n\n' \
-          f'Заполнить форму нужно до <25.01 18:00 (МСК)>'
+          f'Заполнить форму нужно до {deadline.strftime("%d.%m %H:%M")} (МСК)'
     bot.sendMessage(chat_id=user_id, text=msg)
 
 
@@ -64,8 +63,8 @@ def main() -> None:
         level=logging.INFO)
 
     db_students = Student.objects.all()
-    # db_user_ids = [student.tg_id for student in db_students]
-    db_user_ids = [802604339, 15]  # for testing
+    db_user_ids = [student.tg_id for student in db_students]
+    # db_user_ids = [802604339, 15]  # for testing
 
     bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
@@ -73,35 +72,46 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("start", start))
 
-    utc_now = datetime.utcnow()
-    start_date_for_send = 1
-    end_date_for_send = 24
-    while True:
-        if start_date_for_send <= utc_now.day < end_date_for_send and 6 <= utc_now.hour <= 11:
+    now = timezone.now()
+    links_send_date = SendDate.objects.filter(title__contains='формы').get()
+    start_link_send = links_send_date.start_at
+    end_link_send = links_send_date.end_at
+    if start_link_send and end_link_send and \
+            start_link_send <= now < end_link_send and 9 <= now.hour:
+        while True:
             for user_id in db_user_ids:
                 student = Student.objects.get(tg_id=user_id)
                 if not student.link_sent:
                     try:
-                        send_link(bot, user_id)
+                        send_link(bot, user_id, end_link_send)
                         student.link_sent = True
                         student.save()
                         logging.info(f'Message sent to user with id {user_id}')
                     except telegram.error.BadRequest:
                         logging.error(f'Message cannot be sent to user with id {user_id}')
-        sleep(SLEEP_TIME_FOR_MSG_RESEND)
+            sleep(SLEEP_TIME_FOR_MSG_RESEND)
 
-
-    if False: # Заменить на условие, когда будет отправляться результат
-        for user_id in db_user_ids:
-            try:
-                send_result(bot, user_id)
-                logging.info(f'Message sent to user with id {user_id}')
-            except Student.DoesNotExist:
-                logging.error(f'Student with id {user_id} not found in the database')
-            except ValueError:
-                logging.error(f"Student with id {user_id} doesn't belong to any group")
-            except telegram.error.BadRequest:
-                logging.error(f'Message cannot be sent to user with id {user_id}')
+    result_send_date = SendDate.objects.filter(title__contains='Результаты').get()
+    start_result_send = result_send_date.start_at
+    end_result_send = result_send_date.end_at
+    if start_result_send and end_result_send and \
+            start_result_send <= now < end_result_send and 9 <= now.hour:
+        while True:
+            for user_id in db_user_ids:
+                student = Student.objects.get(tg_id=user_id)
+                if not student.result_sent:
+                    try:
+                        send_result(bot, user_id)
+                        student.result_sent = True
+                        student.save()
+                        logging.info(f'Message sent to user with id {user_id}')
+                    except Student.DoesNotExist:
+                        logging.error(f'Student with id {user_id} not found in the database')
+                    except ValueError:
+                        logging.error(f"Student with id {user_id} doesn't belong to any group")
+                    except telegram.error.BadRequest:
+                        logging.error(f'Message cannot be sent to user with id {user_id}')
+            sleep(SLEEP_TIME_FOR_MSG_RESEND)
 
     updater.start_polling()
     updater.idle()
