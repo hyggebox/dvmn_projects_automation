@@ -95,7 +95,7 @@ class Student(models.Model):
     )
     link_sent = models.BooleanField('Ссылка на форму отправлена',
                                     default=False)
-    result_sent = models.BooleanField('Результаты распределения отправлены',
+    result_sent = models.BooleanField('Результаты отправлены',
                                       default=False)
 
     def __str__(self):
