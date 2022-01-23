@@ -7,7 +7,8 @@ class PMAdmin(admin.ModelAdmin):
     form = PMForm
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('f_name', 'l_name', 'level', 'get_best_time_slots', 'get_ok_time_slots')
+    list_display = ('f_name', 'l_name', 'link_sent', 'level', 'get_best_time_slots', 'get_ok_time_slots')
+    list_editable = ['link_sent']
 
 
 admin.site.register(PM, PMAdmin)

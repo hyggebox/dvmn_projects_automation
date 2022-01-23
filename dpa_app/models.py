@@ -93,6 +93,7 @@ class Student(models.Model):
         blank=True,
         null=True
     )
+    link_sent = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Ученик {self.f_name}'
