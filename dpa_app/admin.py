@@ -7,8 +7,8 @@ class PMAdmin(admin.ModelAdmin):
     form = PMForm
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('f_name', 'l_name', 'link_sent', 'level', 'get_best_time_slots', 'get_ok_time_slots')
-    list_editable = ['link_sent']
+    list_display = ('f_name', 'l_name', 'link_sent', 'result_sent', 'level', 'get_best_time_slots', 'get_ok_time_slots')
+    list_editable = ['link_sent', 'result_sent']
 
 class SendDateAdmin(admin.ModelAdmin):
     list_display = ('title', 'start_at', 'end_at')
