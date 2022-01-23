@@ -128,9 +128,9 @@ if __name__ == '__main__':
             student = Student.objects.get(id=student_id)
             students_level = student.level
 
-            for choiced_slot in student_answer:
+            for chosen_slot in student_answer:
 
-                if choiced_slot == slot_id and len(students_in_group) < 3:
+                if chosen_slot == slot_id and len(students_in_group) < 3:
                     students_in_group.append(student_id)
 
                 groups.update({temp_id: students_in_group})
