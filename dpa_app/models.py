@@ -109,3 +109,20 @@ class Student(models.Model):
     class Meta:
         verbose_name = 'Ученика'
         verbose_name_plural = 'Ученики'
+
+
+class SendDate(models.Model):
+    title = models.CharField(verbose_name='Название рассылки',
+                             max_length=200)
+    start_at = models.DateTimeField('Рассылать не ранее',
+                                    null=True,
+                                    blank=True)
+    end_at = models.DateTimeField('Рассылать не позднее',
+                                  null=True,
+                                  blank=True)
+    def __str__(self):
+        return f'{self.title}'
+
+    class Meta:
+        verbose_name = 'Дату рассылки'
+        verbose_name_plural = 'Даты рассылок'
