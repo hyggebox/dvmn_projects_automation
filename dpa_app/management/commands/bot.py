@@ -15,6 +15,7 @@ from dpa_app.models import TimeSlot, PM, Group, Student
 
 
 BASIC_URL = 'https://automatizationprojects.herokuapp.com/'
+SLEEP_TIME_FOR_MSG_RESEND = 1200  # in seconds
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -87,7 +88,7 @@ def main() -> None:
                         logging.info(f'Message sent to user with id {user_id}')
                     except telegram.error.BadRequest:
                         logging.error(f'Message cannot be sent to user with id {user_id}')
-        sleep(15)
+        sleep(SLEEP_TIME_FOR_MSG_RESEND)
 
 
     if False: # Заменить на условие, когда будет отправляться результат
