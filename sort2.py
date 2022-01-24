@@ -99,6 +99,22 @@ def sort_students_for_groups(groups, temporary_ids_for_slots, students):
     return sorted_groups, temporary_ids_for_slots, students
 
 
+def sort_students_by_secondary_slots(groups, temporary_ids_for_slots, student_id, pref_slots_ids):
+    for temp_id, (slot_id, pm_name) in temporary_ids_for_slots.items():
+        pass
+
+    for group_temp_slot_id, student_ids in groups.items():
+        if student_ids:
+            first_groupped_student_lvl = Student.objects.get(id=student_ids[0]).level
+            current_student_lvl = Student.objects.get(id=student_id).level
+            if len(student_ids) < 3 and first_groupped_student_lvl == current_student_lvl:
+                slot_id, groups_pm = temporary_ids_for_slots[group_temp_slot_id]
+                if slot_id in pref_slots_ids:
+                    groups[group_temp_slot_id].append(student_id)
+                    return True
+    return False
+
+
 if __name__ == '__main__':
     available_time_slots = get_pms_time_slots()
     print(available_time_slots) # list of tuples (time_slot_id, PM)
@@ -110,14 +126,31 @@ if __name__ == '__main__':
 
     students = load_student_slots()
     groups = {}
-    sorted_groups, temporary_ids_for_slots, not_included_students = \
+    sorted_groups, _, not_included_students = \
         sort_students_for_groups(groups, temporary_ids_for_slots, students)
 
-    print("Группы:")
+
     # pprint(groups) # keys are temporary slot ids from temporary_ids_for_slots
+    # print_groups(sorted_groups, temporary_ids_for_slots)
+    # pprint(not_included_students)
+
+    secondary_not_included_students = []
+    for student_id, _ in not_included_students.items():
+        students_secondary_slots = load_students_secondary_slots(student_id)
+        if not sort_students_by_secondary_slots(groups,
+                                         temporary_ids_for_slots,
+                                         student_id,
+                                         students_secondary_slots):
+            secondary_not_included_students.append(student_id)
+
+    for group_temp_slot_id, student_ids in groups.items():
+        if len(student_ids) < 2:
+            groups[group_temp_slot_id] = []
+            secondary_not_included_students += student_ids
+
+    print('Группы:')
     print_groups(sorted_groups, temporary_ids_for_slots)
     print('')
-
-    print("Студенты не вошедшие в группы: (id студента: [id слотов])")
-    pprint(not_included_students)
+    print('Студенты не вошедшие в группы: (id студента: [id слотов])')
+    pprint(secondary_not_included_students)
     print('')
