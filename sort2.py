@@ -67,6 +67,7 @@ def sort_students_for_groups(groups, temporary_ids_for_slots, students):
 
     for temp_id, (slot_id, pm_name) in temporary_ids_for_slots.items():
         students_in_group = []
+        first_student_id_in_group = 0
         for student_id, student_answer in students.items():
 
             student = Student.objects.get(id=student_id)
@@ -87,10 +88,10 @@ def sort_students_for_groups(groups, temporary_ids_for_slots, students):
 
                 groups.update({temp_id: students_in_group})
                 last_id = temp_id
-
-            first_grupped_student_lvl = Student.objects.get(
-                id=first_student_id_in_group
-                ).level
+            if first_student_id_in_group != 0:
+                first_grupped_student_lvl = Student.objects.get(
+                    id=first_student_id_in_group
+                    ).level
 
         for student_id in students_in_group:
             del students[student_id]
