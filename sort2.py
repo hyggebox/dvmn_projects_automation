@@ -6,20 +6,6 @@ django.setup()
 
 from dpa_app.models import TimeSlot, PM, Group, Student
 
-from pprint import pprint
-
-# Сейчас не используется
-def get_time_slots():
-    '''Returns a list of available time_slots from DB'''
-    pms = PM.objects.all()
-    available_time_slots = []
-    for pm in pms:
-        time_slots = pm.time_slots.all()
-        for slot in time_slots:
-            available_time_slots.append(slot.id) # returns ids of slots
-            # available_time_slots.append(slot.timeslot) # returns slots
-    return available_time_slots
-
 
 def get_pms_time_slots():
     '''Returns a tuple of available time_slots with PMs from DB'''
@@ -52,7 +38,6 @@ def load_students_secondary_slots(student_id):
 
 
 def print_groups(groups, temp_ids):
-    print("groups", groups)
     for slot_temp_id, student_ids in groups.items():
         slot_id, pm_name = temp_ids[slot_temp_id]
         slot = TimeSlot.objects.get(id=slot_id)
@@ -61,6 +46,22 @@ def print_groups(groups, temp_ids):
             student = Student.objects.get(id=student_id)
             print(f'{student.f_name} {student.l_name} -- ({student.level})')
         print('')
+
+
+def create_groups(groups, temp_ids):
+    for slot_temp_id, student_ids in groups.items():
+        if student_ids:
+            slot_id, pm_name = temp_ids[slot_temp_id]
+            slot = TimeSlot.objects.get(id=slot_id)
+            groups_pm = PM.objects.get(name=pm_name)
+            group, created = Group.objects.get_or_create(
+                pm=groups_pm,
+                time_slot=slot
+            )
+            for student_id in student_ids:
+                student = Student.objects.get(id=student_id)
+                student.group = group
+                student.save()
 
 
 def sort_students_for_groups(groups, temporary_ids_for_slots, students):
@@ -118,22 +119,15 @@ def sort_students_by_secondary_slots(groups, temporary_ids_for_slots, student_id
 
 if __name__ == '__main__':
     available_time_slots = get_pms_time_slots()
-    print(available_time_slots) # list of tuples (time_slot_id, PM)
 
     temporary_ids_for_slots = {}
     for num, slot in enumerate(available_time_slots):
         temporary_ids_for_slots[num] = slot
-    print(temporary_ids_for_slots)
 
     students = load_student_slots()
     groups = {}
     sorted_groups, _, not_included_students = \
         sort_students_for_groups(groups, temporary_ids_for_slots, students)
-
-
-    # pprint(groups) # keys are temporary slot ids from temporary_ids_for_slots
-    # print_groups(sorted_groups, temporary_ids_for_slots)
-    # pprint(not_included_students)
 
     secondary_not_included_students = []
     for student_id, _ in not_included_students.items():
@@ -149,9 +143,9 @@ if __name__ == '__main__':
             groups[group_temp_slot_id] = []
             secondary_not_included_students += student_ids
 
-    print('Группы:')
-    print_groups(sorted_groups, temporary_ids_for_slots)
-    print('')
-    print('Студенты не вошедшие в группы: (id студента: [id слотов])')
-    pprint(secondary_not_included_students)
-    print('')
+    create_groups(groups, temporary_ids_for_slots)
+    print('Id студентов не вошедшие в группы:')
+    print(secondary_not_included_students)
+
+
+
