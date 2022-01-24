@@ -10,7 +10,7 @@ from telegram.ext import (CallbackContext, Updater, CommandHandler)
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand
-from dpa_app.models import TimeSlot, PM, Group, Student, SendDate
+from dpa_app.models import Student, SendDate
 
 
 BASIC_URL = 'https://automatizationprojects.herokuapp.com/'
@@ -21,7 +21,7 @@ def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     update.message.reply_markdown(
-        f'Привет, {user.full_name}\!\n'
+        f'Привет, {user.full_name}!\n'
         f'Позже пришлю тебе ссылку на форму, '
         f'где ты сможешь выбрать удобное время для созвона 😊\n\n'
     )
@@ -64,7 +64,6 @@ def main() -> None:
 
     db_students = Student.objects.all()
     db_user_ids = [student.tg_id for student in db_students]
-    # db_user_ids = [802604339, 15]  # for testing
 
     bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     updater = Updater(token=TELEGRAM_BOT_TOKEN, use_context=True)
@@ -76,9 +75,13 @@ def main() -> None:
     links_send_date = SendDate.objects.filter(title__contains='формы').get()
     start_link_send = links_send_date.start_at
     end_link_send = links_send_date.end_at
-    if start_link_send and end_link_send and \
-            start_link_send <= now < end_link_send and 9 <= now.hour:
-        while True:
+
+    result_send_date = SendDate.objects.filter(title__contains='Результаты').get()
+    start_result_send = result_send_date.start_at
+    end_result_send = result_send_date.end_at
+    while True:
+        if start_link_send and end_link_send and \
+                start_link_send <= now < end_link_send and 9 <= now.hour:
             for user_id in db_user_ids:
                 student = Student.objects.get(tg_id=user_id)
                 if not student.link_sent:
@@ -89,14 +92,9 @@ def main() -> None:
                         logging.info(f'Message sent to user with id {user_id}')
                     except telegram.error.BadRequest:
                         logging.error(f'Message cannot be sent to user with id {user_id}')
-            sleep(SLEEP_TIME_FOR_MSG_RESEND)
 
-    result_send_date = SendDate.objects.filter(title__contains='Результаты').get()
-    start_result_send = result_send_date.start_at
-    end_result_send = result_send_date.end_at
-    if start_result_send and end_result_send and \
-            start_result_send <= now < end_result_send and 9 <= now.hour:
-        while True:
+        if start_result_send and end_result_send and \
+                start_result_send <= now < end_result_send and 9 <= now.hour:
             for user_id in db_user_ids:
                 student = Student.objects.get(tg_id=user_id)
                 if not student.result_sent:
@@ -111,10 +109,12 @@ def main() -> None:
                         logging.error(f"Student with id {user_id} doesn't belong to any group")
                     except telegram.error.BadRequest:
                         logging.error(f'Message cannot be sent to user with id {user_id}')
-            sleep(SLEEP_TIME_FOR_MSG_RESEND)
+        sleep(SLEEP_TIME_FOR_MSG_RESEND)
+
 
     updater.start_polling()
     updater.idle()
+
 
 
 if __name__ == '__main__':
