@@ -21,20 +21,20 @@
 
 ```json
 {
-  'Students':[
-        {
-          'FirstName': 'Иван',
-          'LastName': 'Иванов',
-          'Level': 'Новички',
-          'TelegramID': 123456789
-        },
-        {
-          'FirstName': "Дмитрий",
-          'LastName': "Белоусов",
-          'Level': "Новички",
-          'TelegramID': 987654321
-        }
-    ]
+  "Students": [
+    {
+      "FirstName": "Иван",
+      "LastName": "Иванов",
+      "Level": "Новички",
+      "TelegramID": 123456789
+    },
+    {
+      "FirstName": "Пётр",
+      "LastName": "Петров",
+      "Level": "Новички",
+      "TelegramID": 987654321
+    }
+  ]
 }
 ```
 Файл с названием `input_data.json` должен лежать в папке `/dpa_app/media`. 
